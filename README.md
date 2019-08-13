@@ -3,11 +3,14 @@
 Administrador de chaves para a comunicação entre API's.
 
 ### Instalação
+
+Instalar as libs utilizadas no projeto:
+
 ```
-npm install
+pip install Flask
 ```
 
 ### Para rodar
 ```
-node serve.js
+python run.js
 ```
