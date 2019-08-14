@@ -6,15 +6,15 @@ from flask_jwt_extended import jwt_required
  
 app_blueprint = Blueprint('routes', __name__)
 
-@app_blueprint.route("/itWorks")
+@app_blueprint.route("/itWorks", methods=['GET'])
 def defaultRoute():
     return "Yes, it works!"
 
-@app_blueprint.route("/create", methods=['POST'])
+@app_blueprint.route("/create", methods=['GET'])
 def create():
-    return jwt_manager.create(request.json)
+    return jwt_manager.create()
 
-@app_blueprint.route("/auth")
+@app_blueprint.route("/auth", methods=['GET'])
 @jwt_required
 def auth():
-    return jwt_manager.get_identity_object_from_token()
+    return jwt_manager.auth()
