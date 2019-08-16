@@ -1,7 +1,7 @@
 import os
 import app_flask as app
 import routes
-import managers.jwt as jwt_manager
+import managers.jwt_manager as jwt_manager
 from assets.banner import banner as banner
 
 if __name__ == "__main__":
