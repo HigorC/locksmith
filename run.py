@@ -12,13 +12,12 @@ app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY", "secret-to-local
 jwt = JWTManager(app)
 app.register_blueprint(app_blueprint)
 
-
 @jwt.expired_token_loader
-def my_expired_token_callback(expired_token):
+def caseTokenIsExpired(expired_token):
     token_type = expired_token['type']
     return jsonify({
         'status': 401,
-        'sub_status': 42,
+        'sub_status': 1,
         'msg': 'The {} token has expired'.format(token_type)
     }), 401
 
@@ -32,7 +31,6 @@ if __name__ == "__main__":
 
     # jwt_manager.configure_manager(app_to_run)
     app.run(port=port)
-    
 
     # app_to_run = app.configure_app(app_to_run).run(host='0.0.0.0', port=port) 
     

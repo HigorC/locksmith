@@ -10,3 +10,6 @@ def getMsgRequisicaoInvalida():
     > O atributo email deve ser um email válido.
     > Os atributos username e password devem possuir ao menos 4 caracteres.
     """
+
+def getMsgLoginRequerido():
+    return "Para utilizar esta rota você deve estar logado."
