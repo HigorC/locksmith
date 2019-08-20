@@ -61,3 +61,11 @@ def createUser():
 def login():
     text, status_code = users_manager.login(request.json)
     return text, status_code
+
+@app_blueprint.route("/user/<userId>/newApp", methods=['GET'])
+def vinculateApplication(userId):
+    print(userId)
+    print(request.args.get("name"))
+
+    users_manager.vinculateApp(userId, request.args.get("name"), request.args.get("secret"))
+    return 'oi'

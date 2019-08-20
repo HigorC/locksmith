@@ -3,6 +3,7 @@ import json
 import managers.jwt_manager as jwt_manager
 import os
 import utils.validator as validator
+import db.mongo_connection as mongo_connection
 
 def login(jsonFromRequest = {}):
     # TODO 
@@ -45,7 +46,7 @@ def createUser(jsonFromRequest = {}):
     }
     
     headers = {
-        'Authorization': jwt_manager.createAccessToken(),
+        'Authorization': "Bearer " + jwt_manager.createAccessToken(),
         'Content-type': 'application/json',
         'Accept': 'text/plain'
     }
@@ -61,3 +62,16 @@ def createUser(jsonFromRequest = {}):
         return r.text, r.status_code
 
     return r.text, 201
+
+def vinculateApp(userId, appName, secret):
+    db = mongo_connection.getDb()
+
+    res = db["users"].insert_one({
+        "idLoginme": userId,
+        "applications": [{
+            "name": appName,
+            "secret": secret
+        }]
+    }) 
+
+    print(">> Aplicação vinculada, o ID gerado foi: ", res.inserted_id)
