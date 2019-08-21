@@ -64,8 +64,9 @@ def login():
 
 @app_blueprint.route("/user/<userId>/newApp", methods=['GET'])
 def vinculateApplication(userId):
-    print(userId)
-    print(request.args.get("name"))
-
-    users_manager.vinculateApp(userId, request.args.get("name"), request.args.get("secret"))
-    return 'oi'
+    if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
+        text, status_code =  users_manager.vinculateApp(userId, request.args.get("name"), request.args.get("secret"))
+    else:
+        text, status_code = "Necessário fazer login para acessar esta funcionalidade", 400
+    
+    return text, status_code

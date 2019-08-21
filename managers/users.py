@@ -63,15 +63,38 @@ def createUser(jsonFromRequest = {}):
 
     return r.text, 201
 
+def isUsuarioLogado(token):
+    headers = {'Authorization': token}
+
+    r = requests.get("http://localhost:5001/isLogged", headers = headers)
+
+    if str (r.status_code)[0] != "2":
+        print("[X] >> Ocorreu um erro no Log-in-me")
+        return r.text, r.status_code
+
+    return r.json().get("isLogged")
+
+# Salva no banco de dados (pelo Id do usuário) um novo app com seu secret, caso este
+# não existir
 def vinculateApp(userId, appName, secret):
     db = mongo_connection.getDb()
 
-    res = db["users"].insert_one({
-        "idLoginme": userId,
-        "applications": [{
-            "name": appName,
-            "secret": secret
-        }]
-    }) 
+    userWithApp = db["users"].find_one({"idLoginme": userId,
+        "applications": {"$elemMatch": {"name":appName}}})
 
-    print(">> Aplicação vinculada, o ID gerado foi: ", res.inserted_id)
+    if userWithApp is not None:
+        print("[X] >> O usuário já possui esta aplicação vinculada.")
+        return "O usuário já possui esta aplicação vinculada.", 400
+
+    res = db["users"].find_one_and_update({"idLoginme": userId},
+        {"$addToSet": {
+            "applications": {
+                "name": appName,
+                "secret": secret
+            }}
+        },  upsert=True,)
+
+    text_success = "A aplicação ["+appName+"] foi vinculada ao usuário ["+userId+"]"
+
+    print(">>", text_success)
+    return text_success, 201
