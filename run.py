@@ -10,7 +10,7 @@ from routes import app_blueprint
 app = Flask("__name__")
 # app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY", "secret-to-local-run") 
 
-jwt_manager.configure_manager(app)
+# jwt_manager.configure_manager(app)
 
 jwt = JWTManager(app)
 app.register_blueprint(app_blueprint)

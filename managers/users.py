@@ -18,7 +18,7 @@ def login(jsonFromRequest = {}):
     }
 
     headers = {
-        'Authorization': 'Bearer ' + jwt_manager.createAccessToken("123", jsonProntoParaEnvio),
+        'Authorization': jwt_manager.createAdminAccessToken(),
         'Content-type': 'application/json',
         'Accept': 'text/plain'
     }
@@ -46,7 +46,7 @@ def createUser(jsonFromRequest = {}):
     }
     
     headers = {
-        'Authorization': "Bearer " + jwt_manager.createAccessToken("aliababua"),
+        'Authorization': jwt_manager.createAdminAccessToken(),
         'Content-type': 'application/json',
         'Accept': 'text/plain'
     }
