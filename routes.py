@@ -21,33 +21,53 @@ def defaultRoute():
 def defaultRouteWithToken():
     return "Yes, it works with Token JWT!"
 
+@app_blueprint.route("/teste", methods=['GET'])
+def teste():
+    return jwt_manager.authenticateToken(1)
+    # return "Yteste!"
+
 # Token
 
-@app_blueprint.route("/generateToken", methods=['GET'])
-@jwt_required
-def generateToken():
+@app_blueprint.route("/generateToken/<nameApp>", methods=['GET'])
+# @jwt_required
+def generateToken(nameApp):
 
-    token = request.headers.get("authorization")
-    
-    if validator.isUserLogged(token) is False:
-        return exception_messages.getMsgLoginRequerido(), 400
+
+    print(request.json)
+
 
     response = {
-        "access_token": jwt_manager.createAccessToken(),
-        "refresh_token": jwt_manager.createRefreshToken()
+        "access_token": jwt_manager.createAccessToken("123")
     }
 
     return jsonify(response), 201
 
+
+    # if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
+    #     token = request.headers.get("authorization")
+    
+    #     if validator.isUserLogged(token) is False:
+    #         return exception_messages.getMsgLoginRequerido(), 400
+
+    #     response = {
+    #         "access_token": jwt_manager.createAccessToken(),
+    #         "refresh_token": jwt_manager.createRefreshToken()
+    #     }
+
+    #     return jsonify(response), 201
+    # else:
+    #     return "Necessário fazer login para acessar esta funcionalidade", 400
+    
+
 @app_blueprint.route("/refreshToken", methods=['GET'])
 @jwt_refresh_token_required
 def refreshToken():
-    return jsonify({"access_token": jwt_manager.createAccessToken()}), 201
+    return jsonify({"access_token": jwt_manager.createAccessToken("123")}), 201
 
 @app_blueprint.route("/authenticateToken", methods=['GET'])
 @jwt_required
 def auth():
-    json, status_code = jwt_manager.authenticateToken()
+    json, status_code = jwt_manager.authenticateToken("123")
     return json, status_code
 
 # User
@@ -62,7 +82,8 @@ def login():
     text, status_code = users_manager.login(request.json)
     return text, status_code
 
-@app_blueprint.route("/user/<userId>/newApp", methods=['GET'])
+# http://localhost:5000/user/5d68810541e9d5413ece66f2/newApp?name=teste&secret=bombom
+@app_blueprint.route("/user/<userId>/newApp", methods=['POST'])
 def vinculateApplication(userId):
     if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
         text, status_code =  users_manager.vinculateApp(userId, request.args.get("name"), request.args.get("secret"))
