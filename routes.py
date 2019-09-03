@@ -30,6 +30,7 @@ def teste():
 
 @app_blueprint.route("/generateToken/<nameApp>", methods=['GET'])
 def generateToken(nameApp):
+    
     response = {
         "access_token": jwt_manager.createComumAccessToken("adm", {"teste":1})
     }
@@ -84,9 +85,9 @@ def login():
 # http://localhost:5000/user/5d68810541e9d5413ece66f2/newApp?name=teste&secret=bombom
 @app_blueprint.route("/user/<userId>/newApp", methods=['POST'])
 def vinculateApplication(userId):
-    # if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
-    text, status_code =  users_manager.vinculateApp(userId, request.args.get("name"), request.args.get("secret"))
-    # else:
-        # text, status_code = "Necessário fazer login para acessar esta funcionalidade", 400
+    if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
+        text, status_code =  users_manager.vinculateApp(userId, request.args.get("name"), request.args.get("secret"))
+    else:
+        text, status_code = "Necessário fazer login para acessar esta funcionalidade", 400
     
     return text, status_code

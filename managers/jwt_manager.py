@@ -47,13 +47,23 @@ def authenticateToken(token, secret):
             }), 200
         except jwt.exceptions.InvalidSignatureError:
             print("[X] >> A Assinatura do Token é inválida.")
-            return "A Assinatura do Token é inválida.", 400
+            return jsonify({
+                "msg": "A Assinatura do Token é inválida.",
+                "sub_status": 1
+            }), 400
         except jwt.exceptions.ExpiredSignatureError:
             print("[X] >> O Token expirou.")
-            return "O Token expirou.", 400
+            # return "O Token expirou.", 400
+            return jsonify({
+                "msg": "O Token expirou.",
+                "sub_status": 2
+            }), 400
     except jwt.exceptions.ExpiredSignatureError:
-        print("[X] >> O Token expirou.")
-        return "O Token expirou.", 400
+        return jsonify({
+            "msg": "O Token expirou.",
+            "sub_status": 2
+        }), 400
+        # return "O Token expirou.", 400
 
 def decodeToken(token, secret):
     # app_global.config['JWT_SECRET_KEY'] = secret 
