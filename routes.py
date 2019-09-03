@@ -11,6 +11,8 @@ import utils.exception_messages as exception_messages
 import jwt
 import json
 
+import db.querys as querys
+
 app_blueprint = Blueprint('routes', __name__)
 
 # -------------------------------------------
@@ -28,35 +30,23 @@ def teste():
 # -------------------------------------------
 # Token
 
-@app_blueprint.route("/generateToken/<nameApp>", methods=['GET'])
-def generateToken(nameApp):
+# TODO
+# Não passar userID por parâmetro, desse jeito se tiver um token válido posso alterar qualquer outro user
+@app_blueprint.route("/user/<userId>/generateToken/<nameApp>", methods=['GET'])
+def generateToken(userId, nameApp):
+
+    if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
+        secret = querys.getSecretByUserIdAndAppName(userId, nameApp)
+
+        response = {
+            "access_token": jwt_manager.createComumAccessToken(secret)
+        }
+
+        text, status_code = jsonify(response), 201
+    else:
+        text, status_code = "Necessário fazer login para acessar esta funcionalidade", 400
     
-    response = {
-        "access_token": jwt_manager.createComumAccessToken("adm", {"teste":1})
-    }
-
-    # response = {
-    #     "access_token": jwt_manager.createAdminAccessToken("adm", {"teste":1})
-    # }
-
-    return jsonify(response), 201
-
-
-    # if users_manager.isUsuarioLogado(request.headers.get("authorization")) is True:
-    #     token = request.headers.get("authorization")
-    
-    #     if validator.isUserLogged(token) is False:
-    #         return exception_messages.getMsgLoginRequerido(), 400
-
-    #     response = {
-    #         "access_token": jwt_manager.createAccessToken(),
-    #         "refresh_token": jwt_manager.createRefreshToken()
-    #     }
-
-    #     return jsonify(response), 201
-    # else:
-    #     return "Necessário fazer login para acessar esta funcionalidade", 400
-    
+    return text, status_code
 
 # @app_blueprint.route("/refreshToken", methods=['GET'])
 # # @jwt_refresh_token_required

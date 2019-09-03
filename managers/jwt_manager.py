@@ -6,16 +6,7 @@ import os
 
 import jwt
 
-# Armazena a instância de app, para conseguir mudar a secret na criação de tokens
-# app_global = None
-
-# def configure_manager(app):
-    # app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY", "secret-to-local-run") 
-    # global app_global
-    # app_global  = app
-    # jwt = JWTManager(app)
-
-def createComumAccessToken(secret, objIdentity = None):
+def createComumAccessToken(secret, objIdentity = {}):
     token = jwt.encode(objIdentity, secret, algorithm='HS256')
     return token.decode("utf-8")
 
@@ -53,7 +44,6 @@ def authenticateToken(token, secret):
             }), 400
         except jwt.exceptions.ExpiredSignatureError:
             print("[X] >> O Token expirou.")
-            # return "O Token expirou.", 400
             return jsonify({
                 "msg": "O Token expirou.",
                 "sub_status": 2
@@ -63,7 +53,6 @@ def authenticateToken(token, secret):
             "msg": "O Token expirou.",
             "sub_status": 2
         }), 400
-        # return "O Token expirou.", 400
 
 def decodeToken(token, secret):
     # app_global.config['JWT_SECRET_KEY'] = secret 
