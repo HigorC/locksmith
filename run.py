@@ -6,8 +6,10 @@ import routes
 from flask_jwt_extended import JWTManager
 from flask import Flask, jsonify
 from routes import app_blueprint
+from flask_cors import CORS
 
 app = Flask("__name__")
+CORS(app)
 # app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY", "secret-to-local-run") 
 
 # jwt_manager.configure_manager(app)
